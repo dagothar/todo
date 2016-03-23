@@ -3,13 +3,14 @@ package todo.controllers;
 import static java.lang.Math.toIntExact;
 import todo.dao.TaskDao;
 import java.util.List;
-import java.util.Optional;
 import org.joda.time.LocalDate;
 import todo.models.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,11 +56,15 @@ public class TasksController {
         m.addAttribute("prevDate", date.plusDays(-1));
         m.addAttribute("nowDate", date);
         m.addAttribute("nextDate", date.plusDays(1));
+        
+        /* new task form */
+        Task newTask = new Task(0, 1, false, "", new LocalDate());
+        m.addAttribute("newTask", newTask);
 
         return "todo";
     }
 
-    @RequestMapping(value = "/{date}/setStatus", method = RequestMethod.GET)
+    @RequestMapping(value = "/{date}/set", method = RequestMethod.GET)
     public String setStatus(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam("id") Long id,
@@ -77,6 +82,23 @@ public class TasksController {
     ) {
         taskDao.removeTask(toIntExact(id));
 
+        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
+    }
+    
+    @RequestMapping(value = "/{date}", method = RequestMethod.POST)
+    public String addNewTask(
+            @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            Task task,
+            BindingResult result
+    ) {
+        task.setAuthorId(1);
+        task.setStatus(false);
+        task.setDate(date);
+        
+        System.out.println(task);
+        
+        taskDao.addTask(task);
+        
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
 

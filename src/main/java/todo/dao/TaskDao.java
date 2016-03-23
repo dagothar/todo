@@ -19,5 +19,7 @@ public interface TaskDao {
     void setTaskStatus(int id, boolean status);
     
     void removeTask(int id);
+    
+    void addTask(Task task);
 
 }

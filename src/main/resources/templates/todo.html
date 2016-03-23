@@ -58,13 +58,24 @@
                     </div>
                 </div>
 
+                <form method="POST" action="#" th:action="@{/tasks/} + ${nowDate}" th:object="${newTask}">
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="newTask" placeholder="Your new task" th:field="*{todo}" autofocus="autofocus"/>
+                        <span class="input-group-btn">
+                            <input type="submit" class="btn btn-success" value="Add task"/>
+                        </span>
+                    </div>
+
+                </form>
+
                 <ul class="list-group">
                     <li class="list-group-item" th:each="task : ${tasks}">
                         <a
                             class="glyphicon"
                             th:classappend="${task.status} ? 'glyphicon-check' : 'glyphicon-unchecked'"
                             href="#"
-                            th:href="@{/tasks/} + ${nowDate} + '/setStatus?id=' + ${task.id} + '&amp;status=' + !${task.status}"
+                            th:href="@{/tasks/} + ${nowDate} + '/set?id=' + ${task.id} + '&amp;status=' + !${task.status}"
                             ></a>
 
                         <span class="" th:text="${task.todo}">task to be done</span>

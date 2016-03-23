@@ -69,5 +69,10 @@ public class Task {
     public void setStatus(boolean status) {
         this.status = status;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("Task[%d, %d, %b, %s, %s]", id, authorId, status, todo, date);
+    }
 
 }

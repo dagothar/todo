@@ -71,4 +71,19 @@ public class TaskDaoImpl implements TaskDao {
         jdbcTemplate.update(sql, new Object[]{id});
     }
 
+    @Override
+    public void addTask(Task task) {
+        String sql = "INSERT INTO Tasks(authorId, status, todo, date) VALUES(?, ?, ?, ?)";
+
+        jdbcTemplate.update(
+                sql, 
+                new Object[]{
+                    task.getAuthorId(),
+                    task.getStatus(),
+                    task.getTodo(),
+                    task.getDate().toString("yyyy-MM-dd")
+                }
+        );
+    }
+
 }
