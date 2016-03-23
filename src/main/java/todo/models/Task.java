@@ -62,7 +62,7 @@ public class Task {
         this.date = date;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 

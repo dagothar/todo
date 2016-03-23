@@ -33,14 +33,30 @@
             <div>
                 <nav>
                     <ul class="pager">
-                        <li class="pager-prev">
+                        <li class="previous">
                             <a href="#" th:href="@{/tasks/}+${prevDate}">Previous day</a>
                         </li>
-                        <li class="pager-next">
+                        <li>Tasks for <span th:text="${nowDate}">yyyy-MM-dd</span></li>
+                        <li class="next">
                             <a href="#" th:href="@{/tasks/}+${nextDate}">Next day</a>
                         </li>
                     </ul>
                 </nav>
+
+                <div class="progress">
+                    <div
+                        class="progress-bar progress-bar-striped active" 
+                        role="progressbar" 
+                        aria-valuenow="100" 
+                        th:attr="aria-valuenow=${percentCompleted}" 
+                        aria-valuemin="0" 
+                        aria-valuemax="100"
+                        style="width:100%"
+                        th:style="'width:' + ${percentCompleted} + '%'"
+                        >
+                        Completed: <span th:text="${percentCompleted}">100</span>%
+                    </div>
+                </div>
 
                 <ul class="list-group">
                     <li class="list-group-item" th:each="task : ${tasks}">

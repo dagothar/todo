@@ -38,8 +38,18 @@ public class TasksController {
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             Model m
     ) {
+        /* tasks for this 'date' */
         List<Task> tasks = taskDao.findTasksByAuthorIdAndDate(1, date);
         m.addAttribute("tasks", tasks);
+        
+        /* percentage completed */
+        int completed = 0;
+        for (Task task : tasks) {
+            if (task.getStatus()) ++completed;
+        }
+        int n = tasks.size();
+        int percentComplete = (int)(100.0 * completed / (n > 0 ? n : 1));
+        m.addAttribute("percentCompleted", percentComplete);
 
         /* for pagination */
         m.addAttribute("prevDate", date.plusDays(-1));
