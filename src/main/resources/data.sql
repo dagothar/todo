@@ -1,2 +1,5 @@
-INSERT INTO Entries(message, author, dateTime) VALUES ('Hey! Please leave a message!', 'dagothar', '2013-08-07T15:00:00');
-INSERT INTO Entries(message, author, dateTime) VALUES ('This is me, Dagothar.', 'dagothar', NOW());
+INSERT INTO Tasks(authorId, status, todo, date) VALUES (1, TRUE, 'make tasks database', DATE '2016-03-24');
+INSERT INTO Tasks(authorId, status, todo, date) VALUES (1, TRUE, 'add tasks', DATE '2016-03-24');
+INSERT INTO Tasks(authorId, status, todo, date) VALUES (1, FALSE, 'calendar page', DATE '2016-03-24');
+INSERT INTO Tasks(authorId, status, todo, date) VALUES (1, TRUE, 'other stuff', DATE '2016-03-25');
+INSERT INTO Tasks(authorId, status, todo, date) VALUES (1, FALSE, 'other day', DATE '2016-03-25');
