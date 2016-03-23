@@ -42,7 +42,7 @@ public class TaskDaoImpl implements TaskDao {
     @Override
     public List<Task> findTasksByAuthorIdAndDate(int authorId, LocalDate date) {
         String sql = "SELECT * FROM Tasks WHERE authorId = ? AND date = ?";
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] {authorId, date.toDate()});
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[]{authorId, date.toDate()});
 
         List<Task> tasks = new ArrayList<>();
         for (Map row : rows) {
@@ -62,7 +62,13 @@ public class TaskDaoImpl implements TaskDao {
     @Override
     public void setTaskStatus(int id, boolean status) {
         String sql = "UPDATE Tasks SET status = ? WHERE id = ?";
-        jdbcTemplate.update(sql, new Object[] {status, id});
+        jdbcTemplate.update(sql, new Object[]{status, id});
+    }
+
+    @Override
+    public void removeTask(int id) {
+        String sql = "DELETE FROM Tasks WHERE id = ?";
+        jdbcTemplate.update(sql, new Object[]{id});
     }
 
 }

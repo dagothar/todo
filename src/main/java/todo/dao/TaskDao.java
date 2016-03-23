@@ -17,5 +17,7 @@ public interface TaskDao {
     public List<Task> findTasksByAuthorIdAndDate(int authorId, LocalDate date);
     
     void setTaskStatus(int id, boolean status);
+    
+    void removeTask(int id);
 
 }

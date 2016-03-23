@@ -70,7 +70,12 @@
                         <span class="" th:text="${task.todo}">task to be done</span>
 
                         <div class="pull-right">
-                            <a class="glyphicon glyphicon-remove text-danger"></a>
+                            <a 
+                                class="glyphicon glyphicon-remove text-danger"
+                                href="#"
+                                th:href="@{/tasks/} + ${nowDate} + '/remove?id=' + ${task.id}"
+                                >
+                            </a>
                         </div>
                     </li>
                 </ul>

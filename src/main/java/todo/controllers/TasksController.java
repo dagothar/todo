@@ -69,5 +69,15 @@ public class TasksController {
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
+    
+    @RequestMapping(value = "/{date}/remove", method = RequestMethod.GET)
+    public String removeTask(
+            @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @RequestParam("id") Long id
+    ) {
+        taskDao.removeTask(toIntExact(id));
+
+        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
+    }
 
 }
