@@ -25,11 +25,11 @@ public class TasksController {
 
     @Autowired
     TaskDao taskDao;
-    
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String tasks() {
         LocalDate date = new LocalDate();
-        
+
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
 
@@ -49,14 +49,15 @@ public class TasksController {
         return "todo";
     }
 
-    @RequestMapping(value = "/setStatus", method = RequestMethod.GET)
+    @RequestMapping(value = "/{date}/setStatus", method = RequestMethod.GET)
     public String setStatus(
+            @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam("id") Long id,
             @RequestParam("status") boolean status
     ) {
         taskDao.setTaskStatus(toIntExact(id), status);
 
-        return "redirect:/tasks";
+        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
 
 }

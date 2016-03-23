@@ -62,7 +62,7 @@ public class TaskDaoImpl implements TaskDao {
     @Override
     public void setTaskStatus(int id, boolean status) {
         String sql = "UPDATE Tasks SET status = ? WHERE id = ?";
-        jdbcTemplate.update(sql, new Object[] {id, status});
+        jdbcTemplate.update(sql, new Object[] {status, id});
     }
 
 }
