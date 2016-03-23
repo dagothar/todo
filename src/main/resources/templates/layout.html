@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorator="layout"
-    >
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <head>
         <title>TODO</title>
         <meta charset="UTF-8"/>
@@ -18,17 +15,16 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#" th:href="@{/}">TODO</a>
                 </div>
-
-                <ul class="nav navbar-nav">
-                    <li><a href="#">Todo</a></li>
-                    <li><a href="#">Calendar</a></li>
-                </ul>
-
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="#">Todo</a></li>
+                        <li><a href="#">Calendar</a></li>
+                    </ul>
+                </div>
             </div>
         </nav>
 
         <div class="container" layout:fragment="content">
-            home content
         </div>
 
         <footer class="footer">

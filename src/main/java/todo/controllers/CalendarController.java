@@ -1,4 +1,4 @@
-package todo;
+package todo.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author dagothar
  */
 @Controller
-@RequestMapping(value = {"/", "/home"})
-public class HomeController {
+@RequestMapping(value = "/calendar")
+public class CalendarController {
     
     @RequestMapping(method = RequestMethod.GET)
-    public String home() {
-        return "home";
+    public String calendar() {
+        return "calendar";
     }
-    
 }
