@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -26,6 +27,14 @@ public class TasksController {
 
     @Autowired
     TaskDao taskDao;
+    
+//    @Autowired
+//    Validator validator;
+
+//    @InitBinder
+//    protected void initBinder(WebDataBinder binder) {
+//        binder.setValidator(validator);
+//    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String tasks() {
@@ -89,13 +98,20 @@ public class TasksController {
     public String addNewTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             Task task,
-            BindingResult result
+            BindingResult result,
+            RedirectAttributes attr
     ) {
+        
+        if (result.hasErrors()) {
+            //attr.addFlashAttribute("org.springframework.validation.BindingResult.task", result);
+            //attr.addFlashAttribute("newTask", task);
+
+            //return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
+        }
+        
         task.setAuthorId(1);
         task.setStatus(false);
         task.setDate(date);
-        
-        System.out.println(task);
         
         taskDao.addTask(task);
         
