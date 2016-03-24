@@ -3,6 +3,7 @@ package todo.controllers;
 import static java.lang.Math.toIntExact;
 import todo.dao.TaskDao;
 import java.util.List;
+import javax.validation.Valid;
 import org.joda.time.LocalDate;
 import todo.models.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -97,16 +98,20 @@ public class TasksController {
     @RequestMapping(value = "/{date}", method = RequestMethod.POST)
     public String addNewTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            Task task,
+            @Valid Task task,
             BindingResult result,
             RedirectAttributes attr
     ) {
         
         if (result.hasErrors()) {
-            //attr.addFlashAttribute("org.springframework.validation.BindingResult.task", result);
-            //attr.addFlashAttribute("newTask", task);
+            List<ObjectError> errors = result.getAllErrors();
+            for (ObjectError error : errors) {
+                System.out.println(error);
+            }
+            attr.addFlashAttribute("org.springframework.validation.BindingResult.task", result);
+            attr.addFlashAttribute("newTask", task);
 
-            //return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
+            return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
         }
         
         task.setAuthorId(1);

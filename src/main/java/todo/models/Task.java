@@ -3,6 +3,7 @@ package todo.models;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.joda.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -16,10 +17,11 @@ public class Task {
 
     private boolean status;
 
-//    @NotNull
-//    @Size(min = 1, max = 255, message = "Task description has to be 1-255 characters long")
+    @NotNull
+    @Size(min = 1, max = 255, message = "Task description has to be 1-255 characters long")
     private String todo;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     public Task() {
