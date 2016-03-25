@@ -1,13 +1,13 @@
 package todo.controllers;
 
 import static java.lang.Math.toIntExact;
-import todo.dao.TaskDao;
 import java.util.List;
 import javax.validation.Valid;
 import org.joda.time.LocalDate;
 import todo.models.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import todo.dao.TaskDao;
+import todo.models.CurrentUser;
 
 /**
  *
@@ -45,10 +47,14 @@ public class TasksController {
     @RequestMapping(value = "/{date}", method = RequestMethod.GET)
     public String tasksForDate(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            Model m
+            Model m,
+            Authentication auth
     ) {
+        /* who is the user? */
+        CurrentUser user = (CurrentUser)auth.getPrincipal();
+        
         /* tasks for this 'date' */
-        List<Task> tasks = taskDao.findTasksByAuthorIdAndDate(1, date);
+        List<Task> tasks = taskDao.findTasksByAuthorIdAndDate(user.getId(), date);
         m.addAttribute("tasks", tasks);
 
         /* percentage completed */
@@ -69,7 +75,7 @@ public class TasksController {
 
         /* new task form */
         if (!m.containsAttribute("newTask")) {
-            Task newTask = new Task(0, 1, false, "", new LocalDate());
+            Task newTask = new Task(0, user.getId(), false, "", new LocalDate());
             m.addAttribute("newTask", newTask);
         }
 
