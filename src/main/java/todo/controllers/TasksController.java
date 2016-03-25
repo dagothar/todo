@@ -28,15 +28,13 @@ public class TasksController {
 
     @Autowired
     TaskDao taskDao;
-    
+
 //    @Autowired
 //    Validator validator;
-
 //    @InitBinder
 //    protected void initBinder(WebDataBinder binder) {
 //        binder.setValidator(validator);
 //    }
-
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String tasks() {
         LocalDate date = new LocalDate();
@@ -52,24 +50,28 @@ public class TasksController {
         /* tasks for this 'date' */
         List<Task> tasks = taskDao.findTasksByAuthorIdAndDate(1, date);
         m.addAttribute("tasks", tasks);
-        
+
         /* percentage completed */
         int completed = 0;
         for (Task task : tasks) {
-            if (task.getStatus()) ++completed;
+            if (task.getStatus()) {
+                ++completed;
+            }
         }
         int n = tasks.size();
-        int percentComplete = (int)(100.0 * completed / (n > 0 ? n : 1));
+        int percentComplete = (int) (100.0 * completed / (n > 0 ? n : 1));
         m.addAttribute("percentCompleted", percentComplete);
 
         /* for pagination */
         m.addAttribute("prevDate", date.plusDays(-1));
         m.addAttribute("nowDate", date);
         m.addAttribute("nextDate", date.plusDays(1));
-        
+
         /* new task form */
-        Task newTask = new Task(0, 1, false, "", new LocalDate());
-        m.addAttribute("newTask", newTask);
+        if (!m.containsAttribute("newTask")) {
+            Task newTask = new Task(0, 1, false, "", new LocalDate());
+            m.addAttribute("newTask", newTask);
+        }
 
         return "todo";
     }
@@ -84,7 +86,7 @@ public class TasksController {
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
-    
+
     @RequestMapping(value = "/{date}/remove", method = RequestMethod.GET)
     public String removeTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
@@ -94,7 +96,7 @@ public class TasksController {
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
-    
+
     @RequestMapping(value = "/{date}", method = RequestMethod.POST)
     public String addNewTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
@@ -102,24 +104,24 @@ public class TasksController {
             BindingResult result,
             RedirectAttributes attr
     ) {
-        
+
         if (result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
             for (ObjectError error : errors) {
                 System.out.println(error);
             }
-            attr.addFlashAttribute("org.springframework.validation.BindingResult.task", result);
+            attr.addFlashAttribute("org.springframework.validation.BindingResult.newTask", result);
             attr.addFlashAttribute("newTask", task);
 
             return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
         }
-        
+
         task.setAuthorId(1);
         task.setStatus(false);
         task.setDate(date);
-        
+
         taskDao.addTask(task);
-        
+
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
 

@@ -43,6 +43,7 @@
                     </ul>
                 </nav>
 
+                <!-- progress bar -->
                 <div class="progress">
                     <div
                         class="progress-bar progress-bar-striped"
@@ -59,10 +60,19 @@
                     </div>
                 </div>
 
+                <!-- new task form -->
                 <form method="POST" action="#" th:action="@{/tasks/} + ${nowDate}" th:object="${newTask}">
 
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="newTask" placeholder="Your new task" th:field="*{todo}" autofocus="autofocus"/>
+                    <div class="input-group" th:classappend="${#fields.hasErrors('todo')} ? 'has-error'">
+                        <input 
+                            type="text" 
+                            class="form-control"
+                            id="newTask" 
+                            placeholder="Your new task"
+                            th:placeholder="${#fields.hasErrors('todo')} ? ${#fields.errors('todo')} : 'Your new task'"
+                            th:field="*{todo}" 
+                            autofocus="autofocus"
+                            />
                         <span class="input-group-btn">
                             <input type="submit" class="btn btn-success" value="Add task"/>
                         </span>
@@ -70,6 +80,7 @@
 
                 </form>
 
+                <!-- list of tasks -->
                 <ul class="list-group">
                     <li class="list-group-item" th:each="task : ${tasks}">
                         <a
