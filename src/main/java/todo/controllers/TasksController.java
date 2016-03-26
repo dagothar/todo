@@ -1,6 +1,5 @@
 package todo.controllers;
 
-import static java.lang.Math.toIntExact;
 import java.util.List;
 import javax.validation.Valid;
 import org.joda.time.LocalDate;
@@ -12,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,15 +33,35 @@ public class TasksController {
     @Autowired
     TaskDao taskDao;
 
-//    @Autowired
-//    Validator validator;
-//    @InitBinder
-//    protected void initBinder(WebDataBinder binder) {
-//        binder.setValidator(validator);
-//    }
+    @Autowired
+    Validator validator;
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+    }
+    
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String tasks() {
+        return "redirect:/tasks/today";
+    }
+    
+    @RequestMapping(value = "/yesterday", method = RequestMethod.GET)
+    public String yesterday() {
+        LocalDate date = new LocalDate().minusDays(1);
+
+        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
+    }
+    
+    @RequestMapping(value = "/today", method = RequestMethod.GET)
+    public String today() {
         LocalDate date = new LocalDate();
+
+        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
+    }
+    
+    @RequestMapping(value = "/tomorrow", method = RequestMethod.GET)
+    public String tomorrow() {
+        LocalDate date = new LocalDate().plusDays(1);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
@@ -75,7 +97,7 @@ public class TasksController {
 
         /* new task form */
         if (!m.containsAttribute("newTask")) {
-            Task newTask = new Task(0, user.getId(), false, "", new LocalDate());
+            Task newTask = new Task(0l, user.getId(), false, "", new LocalDate());
             m.addAttribute("newTask", newTask);
         }
 
@@ -83,12 +105,12 @@ public class TasksController {
     }
 
     @RequestMapping(value = "/{date}/set", method = RequestMethod.GET)
-    public String setStatus(
+    public String setTaskStatus(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam("id") Long id,
             @RequestParam("status") boolean status
     ) {
-        taskDao.setTaskStatus(toIntExact(id), status);
+        taskDao.setTaskStatus(id, status);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
@@ -96,9 +118,12 @@ public class TasksController {
     @RequestMapping(value = "/{date}/remove", method = RequestMethod.GET)
     public String removeTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            @RequestParam("id") Long id
+            @RequestParam("id") Long id,
+            Authentication auth
     ) {
-        taskDao.removeTask(toIntExact(id));
+        CurrentUser user = (CurrentUser)auth.getPrincipal();
+        
+        taskDao.removeTask(id);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
@@ -108,8 +133,10 @@ public class TasksController {
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @Valid Task task,
             BindingResult result,
-            RedirectAttributes attr
+            RedirectAttributes attr,
+            Authentication auth
     ) {
+        CurrentUser user = (CurrentUser)auth.getPrincipal();
 
         if (result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
@@ -122,7 +149,7 @@ public class TasksController {
             return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
         }
 
-        task.setAuthorId(1);
+        task.setAuthorId(user.getId());
         task.setStatus(false);
         task.setDate(date);
 

@@ -11,9 +11,9 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 public class Task {
 
-    private int id;
+    private Long id;
 
-    private int authorId;
+    private Long authorId;
 
     private boolean status;
 
@@ -28,7 +28,7 @@ public class Task {
 
     }
 
-    public Task(int id, int authorId, boolean status, String todo, LocalDate date) {
+    public Task(Long id, Long authorId, boolean status, String todo, LocalDate date) {
         this.id = id;
         this.authorId = authorId;
         this.status = status;
@@ -36,19 +36,19 @@ public class Task {
         this.date = date;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(int authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 

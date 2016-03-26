@@ -14,11 +14,11 @@ public interface TaskDao {
 
     public List<Task> findAll();
 
-    public List<Task> findTasksByAuthorIdAndDate(int authorId, LocalDate date);
+    public List<Task> findTasksByAuthorIdAndDate(Long authorId, LocalDate date);
     
-    void setTaskStatus(int id, boolean status);
+    void setTaskStatus(Long id, boolean status);
     
-    void removeTask(int id);
+    void removeTask(Long id);
     
     void addTask(Task task);
 

@@ -7,6 +7,7 @@ import todo.models.Task;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,8 +28,8 @@ public class TaskDaoImpl implements TaskDao {
         List<Task> tasks = new ArrayList<>();
         for (Map row : rows) {
             Task task = new Task(
-                    (int) row.get("id"),
-                    (int) row.get("authorId"),
+                    Long.valueOf((int)row.get("id")),
+                    Long.valueOf((int)row.get("authorId")),
                     (boolean) row.get("status"),
                     (String) row.get("todo"),
                     new LocalDate(row.get("date"))
@@ -40,15 +41,15 @@ public class TaskDaoImpl implements TaskDao {
     }
 
     @Override
-    public List<Task> findTasksByAuthorIdAndDate(int authorId, LocalDate date) {
+    public List<Task> findTasksByAuthorIdAndDate(Long authorId, LocalDate date) {
         String sql = "SELECT * FROM Tasks WHERE authorId = ? AND date = ?";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[]{authorId, date.toDate()});
 
         List<Task> tasks = new ArrayList<>();
         for (Map row : rows) {
             Task task = new Task(
-                    (int) row.get("id"),
-                    (int) row.get("authorId"),
+                    Long.valueOf((int)row.get("id")),
+                    Long.valueOf((int)row.get("authorId")),
                     (boolean) row.get("status"),
                     (String) row.get("todo"),
                     new LocalDate(row.get("date"))
@@ -60,13 +61,13 @@ public class TaskDaoImpl implements TaskDao {
     }
 
     @Override
-    public void setTaskStatus(int id, boolean status) {
+    public void setTaskStatus(Long id, boolean status) {
         String sql = "UPDATE Tasks SET status = ? WHERE id = ?";
         jdbcTemplate.update(sql, new Object[]{status, id});
     }
 
     @Override
-    public void removeTask(int id) {
+    public void removeTask(Long id) {
         String sql = "DELETE FROM Tasks WHERE id = ?";
         jdbcTemplate.update(sql, new Object[]{id});
     }

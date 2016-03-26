@@ -15,21 +15,21 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @SpringBootApplication
 public class Application {
     
-//    @Bean
-//    public MessageSource messageSource() {
-//        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-//        messageSource.setBasename("classpath:messages");
-//        
-//        return messageSource;
-//    }
-//
-//    @Bean
-//    public Validator validator() {
-//        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-//        validator.setValidationMessageSource(messageSource());
-//        
-//        return validator;
-//    }
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:messages");
+        
+        return messageSource;
+    }
+
+    @Bean
+    public Validator validator() {
+        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.setValidationMessageSource(messageSource());
+        
+        return validator;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
