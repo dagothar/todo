@@ -50,14 +50,11 @@ public class TasksController {
     @RequestMapping(value = "/{date}", method = RequestMethod.GET)
     public String showTasksForDate(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            Model m,
-            Authentication auth
+            Model m
     ) {
-        /* who is the user? */
-        CurrentUser user = (CurrentUser) auth.getPrincipal();
 
         /* tasks for this 'date' */
-        List<Task> tasks = taskService.findTasksByAuthorIdAndDate(user.getId(), date);
+        List<Task> tasks = taskService.getTasks(date);
         m.addAttribute("tasks", tasks);
 
         /* percentage completed */
@@ -71,7 +68,7 @@ public class TasksController {
 
         /* new task form */
         if (!m.containsAttribute("newTask")) {
-            Task newTask = new Task(0l, user.getId(), false, "", date);
+            Task newTask = new Task(0l, 0l, false, "", date);
             m.addAttribute("newTask", newTask);
         }
 
@@ -102,11 +99,8 @@ public class TasksController {
     @RequestMapping(value = "/{date}/remove", method = RequestMethod.GET)
     public String removeTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            @RequestParam("id") Long id,
-            Authentication auth
+            @RequestParam("id") Long id
     ) {
-        CurrentUser user = (CurrentUser) auth.getPrincipal();
-
         taskService.removeTask(id);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
@@ -118,8 +112,7 @@ public class TasksController {
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @Valid Task task,
             BindingResult result,
-            RedirectAttributes attr,
-            Authentication auth
+            RedirectAttributes attr
     ) {
         
         if (result.hasErrors()) {
@@ -133,8 +126,6 @@ public class TasksController {
             return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
         }
 
-        CurrentUser user = (CurrentUser) auth.getPrincipal();
-        task.setAuthorId(user.getId());
         taskService.addTask(task);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");

@@ -12,11 +12,7 @@ import todo.models.Task;
 @Component
 public interface TaskService {
 
-    public List<Task> findAll();
-    
-    public List<Task> findTasksByAuthorId(Long authorId);
-
-    public List<Task> findTasksByAuthorIdAndDate(Long authorId, LocalDate date);
+    public List<Task> getTasks(LocalDate date);
     
     void setTaskStatus(Long id, boolean status);
     

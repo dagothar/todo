@@ -22,102 +22,48 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-    
+
     @Autowired
     TaskDao taskDao;
 
     @Override
-    public List<Task> findAll() {
-        String sql = "SELECT * FROM Tasks";
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-
-        List<Task> tasks = new ArrayList<>();
-        for (Map row : rows) {
-            Task task = new Task(
-                    Long.valueOf((int) row.get("id")),
-                    Long.valueOf((int) row.get("authorId")),
-                    (boolean) row.get("status"),
-                    (String) row.get("todo"),
-                    new LocalDate(row.get("date"))
-            );
-            tasks.add(task);
-        }
-
-        return tasks;
-    }
-
-    @Override
-    public List<Task> findTasksByAuthorIdAndDate(Long authorId, LocalDate date) {
-        String sql = "SELECT * FROM Tasks WHERE authorId = ? AND date = ?";
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[]{authorId, date.toDate()});
-
-        List<Task> tasks = new ArrayList<>();
-        for (Map row : rows) {
-            Task task = new Task(
-                    Long.valueOf((int) row.get("id")),
-                    Long.valueOf((int) row.get("authorId")),
-                    (boolean) row.get("status"),
-                    (String) row.get("todo"),
-                    new LocalDate(row.get("date"))
-            );
-            tasks.add(task);
-        }
-
-        return tasks;
-    }
-
-    @Override
-    public List<Task> findTasksByAuthorId(Long authorId) {
-        String sql = "SELECT * FROM Tasks WHERE authorId = ?";
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[]{authorId});
-
-        List<Task> tasks = new ArrayList<>();
-        for (Map row : rows) {
-            Task task = new Task(
-                    Long.valueOf((int) row.get("id")),
-                    Long.valueOf((int) row.get("authorId")),
-                    (boolean) row.get("status"),
-                    (String) row.get("todo"),
-                    new LocalDate(row.get("date"))
-            );
-            tasks.add(task);
-        }
-
+    public List<Task> getTasks(LocalDate date) {
+        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        List<Task> tasks = taskDao.findTasksByAuthorAndDate(user.getId(), date);
+        
         return tasks;
     }
 
     @Override
     public void setTaskStatus(Long id, boolean status) {
-        
         Task task = taskDao.findTaskById(id);
         CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        
+
         if (Objects.equals(task.getAuthorId(), user.getId())) {
-            
+
             task.setStatus(status);
-            taskDao.updateTask(task);        
+            taskDao.updateTask(task);
         } // else throw ...
     }
 
     @Override
     public void removeTask(Long id) {
-        String sql = "DELETE FROM Tasks WHERE id = ?";
-        jdbcTemplate.update(sql, new Object[]{id});
+        Task task = taskDao.findTaskById(id);
+        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (Objects.equals(task.getAuthorId(), user.getId())) {
+
+            taskDao.deleteTask(id);
+        } // else throw ...
     }
 
     @Override
     public void addTask(Task task) {
-        String sql = "INSERT INTO Tasks(authorId, status, todo, date) VALUES(?, ?, ?, ?)";
-
-        jdbcTemplate.update(
-                sql,
-                new Object[]{
-                    task.getAuthorId(),
-                    task.getStatus(),
-                    task.getTodo(),
-                    task.getDate().toString("yyyy-MM-dd")
-                }
-        );
+        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        task.setAuthorId(user.getId());
+        
+        taskDao.createTask(task);
     }
 
     @Override
@@ -130,7 +76,7 @@ public class TaskServiceImpl implements TaskService {
         }
         int n = tasks.size();
         int percentage = (int) (100.0 * completed / (n > 0 ? n : 1));
-        
+
         return percentage;
     }
 
