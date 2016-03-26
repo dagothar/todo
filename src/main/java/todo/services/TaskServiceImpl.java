@@ -1,4 +1,4 @@
-package todo.dao;
+package todo.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @author dagothar
  */
 @Component
-public class TaskDaoImpl implements TaskDao {
+public class TaskServiceImpl implements TaskService {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -28,8 +28,8 @@ public class TaskDaoImpl implements TaskDao {
         List<Task> tasks = new ArrayList<>();
         for (Map row : rows) {
             Task task = new Task(
-                    Long.valueOf((int)row.get("id")),
-                    Long.valueOf((int)row.get("authorId")),
+                    Long.valueOf((int) row.get("id")),
+                    Long.valueOf((int) row.get("authorId")),
                     (boolean) row.get("status"),
                     (String) row.get("todo"),
                     new LocalDate(row.get("date"))
@@ -48,8 +48,28 @@ public class TaskDaoImpl implements TaskDao {
         List<Task> tasks = new ArrayList<>();
         for (Map row : rows) {
             Task task = new Task(
-                    Long.valueOf((int)row.get("id")),
-                    Long.valueOf((int)row.get("authorId")),
+                    Long.valueOf((int) row.get("id")),
+                    Long.valueOf((int) row.get("authorId")),
+                    (boolean) row.get("status"),
+                    (String) row.get("todo"),
+                    new LocalDate(row.get("date"))
+            );
+            tasks.add(task);
+        }
+
+        return tasks;
+    }
+
+    @Override
+    public List<Task> findTasksByAuthorId(Long authorId) {
+        String sql = "SELECT * FROM Tasks WHERE authorId = ?";
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[]{authorId});
+
+        List<Task> tasks = new ArrayList<>();
+        for (Map row : rows) {
+            Task task = new Task(
+                    Long.valueOf((int) row.get("id")),
+                    Long.valueOf((int) row.get("authorId")),
                     (boolean) row.get("status"),
                     (String) row.get("todo"),
                     new LocalDate(row.get("date"))
@@ -77,7 +97,7 @@ public class TaskDaoImpl implements TaskDao {
         String sql = "INSERT INTO Tasks(authorId, status, todo, date) VALUES(?, ?, ?, ?)";
 
         jdbcTemplate.update(
-                sql, 
+                sql,
                 new Object[]{
                     task.getAuthorId(),
                     task.getStatus(),
@@ -85,6 +105,20 @@ public class TaskDaoImpl implements TaskDao {
                     task.getDate().toString("yyyy-MM-dd")
                 }
         );
+    }
+
+    @Override
+    public int calculatePercentageOfCompletedTasks(List<Task> tasks) {
+        int completed = 0;
+        for (Task task : tasks) {
+            if (task.getStatus()) {
+                ++completed;
+            }
+        }
+        int n = tasks.size();
+        int percentage = (int) (100.0 * completed / (n > 0 ? n : 1));
+        
+        return percentage;
     }
 
 }

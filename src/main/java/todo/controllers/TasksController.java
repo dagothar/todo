@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import todo.dao.TaskDao;
 import todo.models.CurrentUser;
+import todo.services.TaskService;
 
 /**
  *
@@ -31,64 +31,38 @@ import todo.models.CurrentUser;
 public class TasksController {
 
     @Autowired
-    TaskDao taskDao;
+    TaskService taskService;
 
     @Autowired
     Validator validator;
+
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
         binder.setValidator(validator);
     }
-    
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String tasks() {
-        return "redirect:/tasks/today";
-    }
-    
-    @RequestMapping(value = "/yesterday", method = RequestMethod.GET)
-    public String yesterday() {
-        LocalDate date = new LocalDate().minusDays(1);
 
-        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
-    }
+//    @RequestMapping(value = "", method = RequestMethod.GET)
+//    public String showAllTasks() {
+//        return "redirect:/tasks/today";
+//    }
     
-    @RequestMapping(value = "/today", method = RequestMethod.GET)
-    public String today() {
-        LocalDate date = new LocalDate();
-
-        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
-    }
-    
-    @RequestMapping(value = "/tomorrow", method = RequestMethod.GET)
-    public String tomorrow() {
-        LocalDate date = new LocalDate().plusDays(1);
-
-        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
-    }
-
+    /* SHOW TASKS */
     @RequestMapping(value = "/{date}", method = RequestMethod.GET)
-    public String tasksForDate(
+    public String showTasksForDate(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             Model m,
             Authentication auth
     ) {
         /* who is the user? */
-        CurrentUser user = (CurrentUser)auth.getPrincipal();
-        
+        CurrentUser user = (CurrentUser) auth.getPrincipal();
+
         /* tasks for this 'date' */
-        List<Task> tasks = taskDao.findTasksByAuthorIdAndDate(user.getId(), date);
+        List<Task> tasks = taskService.findTasksByAuthorIdAndDate(user.getId(), date);
         m.addAttribute("tasks", tasks);
 
         /* percentage completed */
-        int completed = 0;
-        for (Task task : tasks) {
-            if (task.getStatus()) {
-                ++completed;
-            }
-        }
-        int n = tasks.size();
-        int percentComplete = (int) (100.0 * completed / (n > 0 ? n : 1));
-        m.addAttribute("percentCompleted", percentComplete);
+        int progress = taskService.calculatePercentageOfCompletedTasks(tasks);
+        m.addAttribute("progress", progress);
 
         /* for pagination */
         m.addAttribute("prevDate", date.plusDays(-1));
@@ -97,47 +71,59 @@ public class TasksController {
 
         /* new task form */
         if (!m.containsAttribute("newTask")) {
-            Task newTask = new Task(0l, user.getId(), false, "", new LocalDate());
+            Task newTask = new Task(0l, user.getId(), false, "", date);
             m.addAttribute("newTask", newTask);
         }
 
         return "todo";
     }
 
+    @RequestMapping(value = "/today", method = RequestMethod.GET)
+    public String showTasksForToday() {
+
+        LocalDate today = new LocalDate();
+
+        return "redirect:/tasks/" + today.toString("yyyy-MM-dd");
+    }
+
+    /* EDIT TASKS */
     @RequestMapping(value = "/{date}/set", method = RequestMethod.GET)
     public String setTaskStatus(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam("id") Long id,
-            @RequestParam("status") boolean status
+            @RequestParam("status") boolean status,
+            Authentication auth
     ) {
-        taskDao.setTaskStatus(id, status);
+        /* todo: check user */
+        taskService.setTaskStatus(id, status);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
 
+    /* REMOVE TASKS */
     @RequestMapping(value = "/{date}/remove", method = RequestMethod.GET)
     public String removeTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam("id") Long id,
             Authentication auth
     ) {
-        CurrentUser user = (CurrentUser)auth.getPrincipal();
-        
-        taskDao.removeTask(id);
+        CurrentUser user = (CurrentUser) auth.getPrincipal();
+
+        taskService.removeTask(id);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
 
+    /* ADD TASKS */
     @RequestMapping(value = "/{date}", method = RequestMethod.POST)
-    public String addNewTask(
+    public String addTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @Valid Task task,
             BindingResult result,
             RedirectAttributes attr,
             Authentication auth
     ) {
-        CurrentUser user = (CurrentUser)auth.getPrincipal();
-
+        
         if (result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
             for (ObjectError error : errors) {
@@ -149,11 +135,9 @@ public class TasksController {
             return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
         }
 
+        CurrentUser user = (CurrentUser) auth.getPrincipal();
         task.setAuthorId(user.getId());
-        task.setStatus(false);
-        task.setDate(date);
-
-        taskDao.addTask(task);
+        taskService.addTask(task);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }

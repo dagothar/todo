@@ -17,10 +17,7 @@ public class HomeController {
     @RequestMapping(method = RequestMethod.GET)
     public String home(Authentication auth) {
         
-        CurrentUser currentUser = (CurrentUser)auth.getPrincipal();
-        System.out.println("id: " + currentUser.getId());
-        
-        return "home";
+        return "redirect:/tasks/today";
     }
     
 }

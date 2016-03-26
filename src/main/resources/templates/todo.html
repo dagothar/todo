@@ -34,11 +34,11 @@
                 <nav>
                     <ul class="pager">
                         <li class="previous">
-                            <a href="#" th:href="@{/tasks/}+${prevDate}">Previous day</a>
+                            <a href="#" th:href="@{/tasks/} + ${prevDate}">Previous day</a>
                         </li>
                         <li>Tasks for <span th:text="${nowDate}">yyyy-MM-dd</span></li>
                         <li class="next">
-                            <a href="#" th:href="@{/tasks/}+${nextDate}">Next day</a>
+                            <a href="#" th:href="@{/tasks/} + ${nextDate}">Next day</a>
                         </li>
                     </ul>
                 </nav>
@@ -47,16 +47,16 @@
                 <div class="progress">
                     <div
                         class="progress-bar progress-bar-striped"
-                        th:classappend="${percentCompleted} == 100 ? 'progress-bar-success' : 'active'"
+                        th:classappend="${progress} == 100 ? 'progress-bar-success' : 'active'"
                         role="progressbar" 
                         aria-valuenow="100" 
-                        th:attr="aria-valuenow=${percentCompleted}" 
+                        th:attr="aria-valuenow=${progress}" 
                         aria-valuemin="0" 
                         aria-valuemax="100"
                         style="width:100%"
-                        th:style="'width:' + ${percentCompleted} + '%'"
+                        th:style="'width:' + ${progress} + '%'"
                         >
-                        Completed: <span th:text="${percentCompleted}">100</span>%
+                        Completed: <span th:text="${progress}">100</span>%
                     </div>
                 </div>
 
@@ -76,6 +76,8 @@
                         <span class="input-group-btn">
                             <input type="submit" class="btn btn-success" value="Add task"/>
                         </span>
+                        <input type="hidden" id="newTaskDate" th:field="*{date}" value="2016-03-24" th:value="${nowDate}"/>
+                        <input type="hidden" id="newTaskStatus" th:field="*{status}" value="2016-03-24" th:value="false"/>
                     </div>
 
                 </form>

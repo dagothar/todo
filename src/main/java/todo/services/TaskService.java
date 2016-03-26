@@ -1,4 +1,4 @@
-package todo.dao;
+package todo.services;
 
 import java.util.List;
 import org.joda.time.LocalDate;
@@ -10,9 +10,11 @@ import todo.models.Task;
  * @author dagothar
  */
 @Component
-public interface TaskDao {
+public interface TaskService {
 
     public List<Task> findAll();
+    
+    public List<Task> findTasksByAuthorId(Long authorId);
 
     public List<Task> findTasksByAuthorIdAndDate(Long authorId, LocalDate date);
     
@@ -21,5 +23,7 @@ public interface TaskDao {
     void removeTask(Long id);
     
     void addTask(Task task);
+    
+    int calculatePercentageOfCompletedTasks(List<Task> tasks);
 
 }
