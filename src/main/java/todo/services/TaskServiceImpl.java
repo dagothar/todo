@@ -3,22 +3,28 @@ package todo.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import todo.models.Task;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import todo.dao.TaskDao;
+import todo.models.CurrentUser;
 
 /**
  *
  * @author dagothar
  */
-@Component
+@Service
 public class TaskServiceImpl implements TaskService {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+    
+    @Autowired
+    TaskDao taskDao;
 
     @Override
     public List<Task> findAll() {
@@ -82,8 +88,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void setTaskStatus(Long id, boolean status) {
-        String sql = "UPDATE Tasks SET status = ? WHERE id = ?";
-        jdbcTemplate.update(sql, new Object[]{status, id});
+        
+        Task task = taskDao.findTaskById(id);
+        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        if (Objects.equals(task.getAuthorId(), user.getId())) {
+            
+            task.setStatus(status);
+            taskDao.updateTask(task);        
+        } // else throw ...
     }
 
     @Override

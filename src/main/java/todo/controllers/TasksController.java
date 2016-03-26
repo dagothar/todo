@@ -91,10 +91,8 @@ public class TasksController {
     public String setTaskStatus(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam("id") Long id,
-            @RequestParam("status") boolean status,
-            Authentication auth
+            @RequestParam("status") boolean status
     ) {
-        /* todo: check user */
         taskService.setTaskStatus(id, status);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
