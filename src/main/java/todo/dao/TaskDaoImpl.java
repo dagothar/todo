@@ -1,25 +1,18 @@
 package todo.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import todo.models.CurrentUser;
+import org.springframework.stereotype.Repository;
 import todo.models.Task;
 
 /**
  *
  * @author dagothar
  */
-@Component
+@Repository
 public class TaskDaoImpl implements TaskDao {
     
     @Autowired
@@ -49,10 +42,10 @@ public class TaskDaoImpl implements TaskDao {
     }
 
     @Override
-    public List<Task> findTasksByAuthorAndDate(Long authorId, LocalDate date) {
-        String sql = "SELECT * FROM Tasks WHERE authorId = ? AND date = ?";
+    public List<Task> findTasksByAuthorAndDate(Long author, LocalDate date) {
+        String sql = "SELECT * FROM Tasks WHERE author = ? AND date = ?";
 
-        List<Task> tasks = jdbcTemplate.query(sql, new Object[]{authorId, date.toDate()}, new TaskRowMapper());
+        List<Task> tasks = jdbcTemplate.query(sql, new Object[]{author, date.toDate()}, new TaskRowMapper());
 
         return tasks;
     }
@@ -61,12 +54,12 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public void updateTask(Task task) {
-        String sql = "UPDATE Tasks SET authorId = ?, todo = ?, status = ?, date = ? WHERE id = ?";
+        String sql = "UPDATE Tasks SET author = ?, todo = ?, status = ?, date = ? WHERE id = ?";
         
         Long id = task.getId();
         
         jdbcTemplate.update(sql, new Object[]{
-            task.getAuthorId(), 
+            task.getAuthor(), 
             task.getTodo(), 
             task.getStatus(), 
             task.getDate().toString("yyyy-MM-dd"),
@@ -75,20 +68,20 @@ public class TaskDaoImpl implements TaskDao {
     }
     
     @Override
-    public void deleteTask(Long id) {
+    public void deleteTask(Task task) {
         String sql = "DELETE FROM Tasks WHERE id = ?";
         
-        jdbcTemplate.update(sql, new Object[]{id});
+        jdbcTemplate.update(sql, new Object[]{task.getId()});
     }
 
     @Override
     public void createTask(Task task) {
-        String sql = "INSERT INTO Tasks(authorId, status, todo, date) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO Tasks(author, status, todo, date) VALUES(?, ?, ?, ?)";
 
         jdbcTemplate.update(
                 sql,
                 new Object[]{
-                    task.getAuthorId(),
+                    task.getAuthor(),
                     task.getStatus(),
                     task.getTodo(),
                     task.getDate().toString("yyyy-MM-dd")

@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -41,20 +40,18 @@ public class TasksController {
         binder.setValidator(validator);
     }
 
-//    @RequestMapping(value = "", method = RequestMethod.GET)
-//    public String showAllTasks() {
-//        return "redirect:/tasks/today";
-//    }
-    
     /* SHOW TASKS */
     @RequestMapping(value = "/{date}", method = RequestMethod.GET)
     public String showTasksForDate(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            Model m
+            Model m,
+            Authentication auth
     ) {
+        CurrentUser user = (CurrentUser) auth.getPrincipal();
 
         /* tasks for this 'date' */
-        List<Task> tasks = taskService.getTasks(date);
+        System.out.println(user.getId());
+        List<Task> tasks = taskService.findTasksByAuthorAndDate(user.getId(), date);
         m.addAttribute("tasks", tasks);
 
         /* percentage completed */
@@ -90,7 +87,9 @@ public class TasksController {
             @RequestParam("id") Long id,
             @RequestParam("status") boolean status
     ) {
-        taskService.setTaskStatus(id, status);
+        Task task = taskService.findTaskById(id);
+        task.setStatus(!task.getStatus());
+        taskService.updateTask(task);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
@@ -101,7 +100,8 @@ public class TasksController {
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam("id") Long id
     ) {
-        taskService.removeTask(id);
+        Task task = taskService.findTaskById(id);
+        taskService.removeTask(task);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
@@ -112,20 +112,20 @@ public class TasksController {
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @Valid Task task,
             BindingResult result,
-            RedirectAttributes attr
+            RedirectAttributes attr,
+            Authentication auth
     ) {
         
         if (result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
-            for (ObjectError error : errors) {
-                System.out.println(error);
-            }
+            
             attr.addFlashAttribute("org.springframework.validation.BindingResult.newTask", result);
             attr.addFlashAttribute("newTask", task);
 
             return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
         }
 
+        CurrentUser user = (CurrentUser) auth.getPrincipal();
+        task.setAuthor(user.getId());
         taskService.addTask(task);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");

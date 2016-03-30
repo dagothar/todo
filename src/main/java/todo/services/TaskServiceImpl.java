@@ -1,17 +1,12 @@
 package todo.services;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import todo.models.Task;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import todo.dao.TaskDao;
-import todo.models.CurrentUser;
 
 /**
  *
@@ -25,45 +20,34 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     TaskDao taskDao;
+    
+    @Override
+    public void addTask(Task task) {
+        taskDao.createTask(task);
+    }
 
     @Override
-    public List<Task> getTasks(LocalDate date) {
-        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        
-        List<Task> tasks = taskDao.findTasksByAuthorAndDate(user.getId(), date);
-        
+    public Task findTaskById(Long id) {
+        Task task = taskDao.findTaskById(id);
+
+        return task;
+    }
+
+    @Override
+    public List<Task> findTasksByAuthorAndDate(Long authorId, LocalDate date) {
+        List<Task> tasks = taskDao.findTasksByAuthorAndDate(authorId, date);
+
         return tasks;
     }
 
     @Override
-    public void setTaskStatus(Long id, boolean status) {
-        Task task = taskDao.findTaskById(id);
-        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (Objects.equals(task.getAuthorId(), user.getId())) {
-
-            task.setStatus(status);
-            taskDao.updateTask(task);
-        } // else throw ...
+    public void updateTask(Task task) {
+        taskDao.updateTask(task);
     }
 
     @Override
-    public void removeTask(Long id) {
-        Task task = taskDao.findTaskById(id);
-        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (Objects.equals(task.getAuthorId(), user.getId())) {
-
-            taskDao.deleteTask(id);
-        } // else throw ...
-    }
-
-    @Override
-    public void addTask(Task task) {
-        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        task.setAuthorId(user.getId());
-        
-        taskDao.createTask(task);
+    public void removeTask(Task task) {
+        taskDao.deleteTask(task);
     }
 
     @Override

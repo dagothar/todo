@@ -13,7 +13,7 @@ public class Task {
 
     private Long id;
 
-    private Long authorId;
+    private Long author;
 
     private boolean status;
 
@@ -28,9 +28,9 @@ public class Task {
 
     }
 
-    public Task(Long id, Long authorId, boolean status, String todo, LocalDate date) {
+    public Task(Long id, Long author, boolean status, String todo, LocalDate date) {
         this.id = id;
-        this.authorId = authorId;
+        this.author = author;
         this.status = status;
         this.todo = todo;
         this.date = date;
@@ -44,12 +44,12 @@ public class Task {
         this.id = id;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Long getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setAuthor(Long author) {
+        this.author = author;
     }
 
     public String getTodo() {
@@ -78,7 +78,7 @@ public class Task {
     
     @Override
     public String toString() {
-        return String.format("Task[%d, %d, %b, %s, %s]", id, authorId, status, todo, date);
+        return String.format("Task[%d, %d, %b, %s, %s]", id, author, status, todo, date);
     }
 
 }
