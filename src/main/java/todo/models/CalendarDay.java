@@ -10,14 +10,17 @@ public class CalendarDay {
     
     private LocalDate date;
     
-    private boolean status;
+    private boolean busy;
+    
+    private boolean proper;
 
     public CalendarDay() {
     }
 
-    public CalendarDay(LocalDate date, boolean status) {
+    public CalendarDay(LocalDate date, boolean status, boolean proper) {
         this.date = date;
-        this.status = status;
+        this.busy = status;
+        this.proper = proper;
     }
 
     public LocalDate getDate() {
@@ -28,13 +31,19 @@ public class CalendarDay {
         this.date = date;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isBusy() {
+        return busy;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setBusy(boolean busy) {
+        this.busy = busy;
     }
 
-    
+    public boolean isProper() {
+        return proper;
+    }
+
+    public void setProper(boolean proper) {
+        this.proper = proper;
+    }
 }

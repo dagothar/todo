@@ -3,11 +3,14 @@ package todo.controllers;
 import java.util.List;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import todo.models.CalendarDay;
+import todo.models.CurrentUser;
 import todo.services.CalendarService;
 
 /**
@@ -25,16 +28,19 @@ public class CalendarController {
     public String calendar(
             @PathVariable("year") int year,
             @PathVariable("month") int month,
-            Model m
+            Model m,
+            Authentication auth
     ) {
+        CurrentUser user = (CurrentUser) auth.getPrincipal();
+        
         /* list of days for this month */
-        LocalDate monthDate = new LocalDate(year, month, 1);
-        List<LocalDate> daysOfTheMonth = calendarService.getDaysOfTheMonth(monthDate);
-        m.addAttribute("days", daysOfTheMonth);
+        LocalDate date = new LocalDate(year, month, 1);
+        List<List<CalendarDay>> weeks = calendarService.getWeeksList(user.getId(), date);
+        m.addAttribute("weeks", weeks);
         
         /* for pagination */
         //String prevMonthHref = String.format();
-        String title = String.format("%d %s", year, monthDate.toString("MMM"));
+        String title = String.format("%d %s", year, date.toString("MMM"));
         
         return "calendar";
     }

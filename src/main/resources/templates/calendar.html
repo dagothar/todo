@@ -43,12 +43,28 @@
                     </ul>
                 </nav>
                 
-                <!-- list of days -->
-                <ul class="list-group">
-                    <li class="list-group-item" th:each="day : ${days}">
-                        <a href="#" th:href="@{/tasks/} + ${day}" th:text="${day}"></a>
-                    </li>
-                </ul>
+                <!-- table of days -->
+                <table class="table table-bordered calendar">
+                    <thead>
+                        <tr class="danger">
+                            <td class="col-md-1">Monday</td>
+                            <td class="col-md-1">Tuesday</td>
+                            <td class="col-md-1">Wednesday</td>
+                            <td class="col-md-1">Thursday</td>
+                            <td class="col-md-1">Friday</td>
+                            <td class="col-md-1">Saturday</td>
+                            <td class="col-md-1">Sunday</td>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr th:each="week : ${weeks}">
+                            <td class="text-center" th:each="day : ${week}" th:classappend="${day.busy} ? 'warning' : (${day.proper} ? '' : 'active')">
+                                <a href="#" th:href="@{/tasks/} + ${day.date}" th:text="${day.date.dayOfMonth}">11</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </div>
 
