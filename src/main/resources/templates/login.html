@@ -23,7 +23,7 @@
                     <li><a href="#">Todo</a></li>
                     <li><a href="#">Calendar</a></li>
                 </ul>
-                
+
                 <form sec:authorize="#{isAuthenticated()}" class="nav navbar-nav navbar-right" action="#" th:action="@{/logout}" method="POST">
                     <button type="submit" class="btn btn-default">Logout</button>
                 </form>
@@ -32,25 +32,26 @@
         </nav>
 
         <div class="container" layout:fragment="content">
+
             <form method="POST" action="#" th:action="@{/login}">
 
                 <div class="form-group">
                     <label for="username">Username:</label>
                     <input type="text" class="form-control" name="username" id="username" placeholder="Username" autofocus="autofocus"/>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" name="password" id="password" />
                 </div>
                 
-                <!--div class="form-group">
-                    <label for="remember-me">Remember me:</label>
-                    <input type="checkbox" class="form-control" name="remember-me" id="remember-me" />
-                </div-->
-                
+                <div class="checkbox">
+                    <label><input type="checkbox" name="remember-me" id="remember-me"/> Remember me</label>
+                </div>
+
+
                 <button type="submit" class="btn btn-default">Sign in</button>
-                
+
                 <div class="text-danger" th:if="${error}">Invalid username or password!</div>
 
             </form>
