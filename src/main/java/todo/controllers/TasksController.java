@@ -50,7 +50,6 @@ public class TasksController {
         CurrentUser user = (CurrentUser) auth.getPrincipal();
 
         /* tasks for this 'date' */
-        System.out.println(user.getId());
         List<Task> tasks = taskService.findTasksByAuthorAndDate(user.getId(), date);
         m.addAttribute("tasks", tasks);
 

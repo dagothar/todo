@@ -34,8 +34,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findTasksByAuthorAndDate(Long authorId, LocalDate date) {
-        List<Task> tasks = taskDao.findTasksByAuthorAndDate(authorId, date);
+    public List<Task> findTasksByAuthorAndDate(Long author, LocalDate date) {
+        List<Task> tasks = taskDao.findTasksByAuthorAndDate(author, date);
 
         return tasks;
     }

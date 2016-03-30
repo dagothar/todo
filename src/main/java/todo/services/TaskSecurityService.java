@@ -15,7 +15,6 @@ import todo.models.Task;
 public class TaskSecurityService {
     
     public boolean isAuthor(CurrentUser user, Long author) {
-        System.out.println(user.getId() + " " + author);
         return Objects.equals(user.getId(), author);
     }
     
@@ -24,8 +23,6 @@ public class TaskSecurityService {
     }
     
     public boolean isOwnerOf(CurrentUser user, List<Task> tasks) {
-        //System.out.println(user.getUsername() + "is owner of" + tasks.stream().noneMatch((task) -> (!isOwnerOf(user, task))));
-        
         return tasks.stream().noneMatch((task) -> (!isOwnerOf(user, task)));
     }
 }
