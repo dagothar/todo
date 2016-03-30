@@ -52,8 +52,8 @@ public class CalendarServiceImpl implements CalendarService {
     public List<List<LocalDate>> getWeeksOfTheMonth(LocalDate date) {
         List<List<LocalDate>> weeks = new ArrayList<>();
         
-        LocalDate cur = date.withDayOfMonth(1);
-        LocalDate end = cur.plusMonths(1);
+        LocalDate cur = date.withDayOfMonth(1).withDayOfWeek(1);
+        LocalDate end = date.withDayOfMonth(1).plusMonths(1);
         
         do {
             List<LocalDate> week = getDaysOfTheWeek(cur);
