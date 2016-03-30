@@ -28,7 +28,30 @@
         </nav>
 
         <div class="container" layout:fragment="content">
-            home content
+
+            <!-- list of todos -->
+            <div>
+                <nav>
+                    <ul class="pager">
+                        <li class="previous">
+                            <a href="#" th:href="@{/calendar/} + ${prevMonth}">Previous month</a>
+                        </li>
+                        <li>Tasks for <span th:text="${nowMonth}">July 2016</span></li>
+                        <li class="next">
+                            <a href="#" th:href="@{/calendar/} + ${nextMonth}">Next day</a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <!-- list of days -->
+                <ul class="list-group">
+                    <li class="list-group-item" th:each="day : ${days}">
+                        <a href="#" th:href="@{/tasks/} + ${day}" th:text="${day}"></a>
+                    </li>
+                </ul>
+
+            </div>
+
         </div>
 
         <footer class="footer">
