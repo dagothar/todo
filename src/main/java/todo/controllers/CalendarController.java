@@ -39,8 +39,11 @@ public class CalendarController {
         m.addAttribute("weeks", weeks);
         
         /* for pagination */
-        //String prevMonthHref = String.format();
         String title = String.format("%d %s", year, date.toString("MMM"));
+        m.addAttribute("title", title);
+        
+        m.addAttribute("prevMonth", date.minusMonths(1).toString("yyyy/MM"));
+        m.addAttribute("nextMonth", date.plusMonths(1).toString("yyyy/MM"));
         
         return "calendar";
     }

@@ -61,6 +61,7 @@ public class TasksController {
         m.addAttribute("prevDate", date.plusDays(-1));
         m.addAttribute("nowDate", date);
         m.addAttribute("nextDate", date.plusDays(1));
+        m.addAttribute("nowMonth", date.toString("yyyy/MM"));
 
         /* new task form */
         if (!m.containsAttribute("newTask")) {

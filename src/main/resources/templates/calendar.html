@@ -36,9 +36,9 @@
                         <li class="previous">
                             <a href="#" th:href="@{/calendar/} + ${prevMonth}">Previous month</a>
                         </li>
-                        <li>Tasks for <span th:text="${nowMonth}">July 2016</span></li>
+                        <li>Tasks for <span th:text="${title}">July 2016</span></li>
                         <li class="next">
-                            <a href="#" th:href="@{/calendar/} + ${nextMonth}">Next day</a>
+                            <a href="#" th:href="@{/calendar/} + ${nextMonth}">Next month</a>
                         </li>
                     </ul>
                 </nav>
@@ -59,7 +59,7 @@
                     
                     <tbody>
                         <tr th:each="week : ${weeks}">
-                            <td class="text-center" th:each="day : ${week}" th:classappend="${day.busy} ? 'warning' : (${day.proper} ? '' : 'active')">
+                            <td class="text-center" th:each="day : ${week}" th:classappend="${day.proper} ? (${day.completed} == 100 ? 'success' : (${day.busy} ? 'warning' : '')) : 'active'">
                                 <a href="#" th:href="@{/tasks/} + ${day.date}" th:text="${day.date.dayOfMonth}">11</a>
                             </td>
                         </tr>

@@ -36,7 +36,7 @@
                         <li class="previous">
                             <a href="#" th:href="@{/tasks/} + ${prevDate}">Previous day</a>
                         </li>
-                        <li>Tasks for <span th:text="${nowDate}">yyyy-MM-dd</span></li>
+                        <li>Tasks for <a href="#" th:href="@{/calendar/} + ${nowMonth}" th:text="${nowDate}">yyyy-MM-dd</a></li>
                         <li class="next">
                             <a href="#" th:href="@{/tasks/} + ${nextDate}">Next day</a>
                         </li>

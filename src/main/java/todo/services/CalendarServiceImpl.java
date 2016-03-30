@@ -69,9 +69,10 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public CalendarDay makeCalendarDay(Long author, LocalDate date, int month) {
         List<Task> tasks = taskService.findTasksByAuthorAndDate(author, date);
-        boolean hasTasks = !tasks.isEmpty();
+        boolean busy = !tasks.isEmpty();
+        int completed = taskService.calculatePercentageOfCompletedTasks(tasks);
         
-        CalendarDay calendarDay = new CalendarDay(date, hasTasks, date.getMonthOfYear() == month);
+        CalendarDay calendarDay = new CalendarDay(date, busy, completed, date.getMonthOfYear() == month);
         return calendarDay;
     }
     
