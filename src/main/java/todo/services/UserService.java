@@ -2,6 +2,7 @@ package todo.services;
 
 import java.util.List;
 import java.util.Optional;
+import todo.forms.UserForm;
 import todo.models.User;
 
 /**
@@ -15,5 +16,7 @@ public interface UserService {
     Optional<User> getUserByUsername(String username);
 
     List<User> getAllUsers();
+    
+    void create(UserForm userForm);
     
 }

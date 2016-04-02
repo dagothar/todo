@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import todo.forms.UserForm;
+import todo.models.Role;
 import todo.models.User;
 
 /**
@@ -54,6 +57,17 @@ public class UserServiceImpl implements UserService {
         List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper(User.class));
         
         return users;
+    }
+
+    @Override
+    public void create(UserForm userForm) {
+        User user = new User();
+        user.setUsername(userForm.getUsername());
+        user.setPasswordHash(new BCryptPasswordEncoder().encode(userForm.getPassword()));
+        user.setRole(Role.USER);
+        
+        String sql = "INSERT INTO Users(username, passwordHash, role) VALUES(?, ?, ?)";
+        jdbcTemplate.update(sql, new Object[] {user.getUsername(), user.getPasswordHash(), "USER"});
     }
 
 }

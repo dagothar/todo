@@ -29,26 +29,24 @@
 
         <div class="container" layout:fragment="content">
 
-            <form method="POST" action="#" th:action="@{/login}">
+            <form method="POST" action="#" th:action="@{/register}" th:object="${userForm}">
 
                 <div class="form-group">
-                    <label for="username">Username:</label>
+                    <label for="username">Username: <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:text="${#fields.errors('username')}">username error</span></label>
                     <input type="text" class="form-control" name="username" id="username" placeholder="Username" autofocus="autofocus"/>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password:</label>
+                    <label for="password">Password: <span class="text-danger" th:if="${#fields.hasErrors('password')}" th:text="${#fields.errors('password')}"></span></label>
                     <input type="password" class="form-control" name="password" id="password" />
                 </div>
                 
-                <div class="checkbox">
-                    <label><input type="checkbox" name="remember-me" id="remember-me"/> Remember me</label>
+                <div class="form-group">
+                    <label for="passwordConfirm">Repeat password: <span class="text-danger" th:if="${#fields.hasErrors('passwordConfirm')}" th:text="${#fields.errors('passwordConfirm')}"></span></label>
+                    <input type="password" class="form-control" name="passwordConfirm" id="passwordConfirm" />
                 </div>
 
-
-                <button type="submit" class="btn btn-default">Sign in</button>
-
-                <div class="text-danger" th:if="${error}">Invalid username or password!</div>
+                <button type="submit" class="btn btn-default">Sign up</button>
 
             </form>
         </div>
