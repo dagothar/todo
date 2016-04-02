@@ -1,17 +1,19 @@
 package todo.forms;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+import todo.models.User;
 import todo.services.UserService;
 
 /**
  *
  * @author dagothar
  */
+@Component
 public class UserFormValidator implements Validator {
-    
+
     private final UserService userService;
 
     @Autowired
@@ -30,17 +32,19 @@ public class UserFormValidator implements Validator {
         validatePassword(form, errors);
         validateUsername(form, errors);
     }
-    
+
     private void validatePassword(UserForm form, Errors errors) {
+
         if (!form.getPassword().equals(form.getPasswordConfirm())) {
             errors.rejectValue("passwordConfirm", "password.no_match", "Passwords do not match!");
         }
     }
-    
+
     private void validateUsername(UserForm form, Errors errors) {
+
         if (userService.getUserByUsername(form.getUsername()).isPresent()) {
             errors.rejectValue("username", "username.exists", "Username already exists!");
         }
     }
-    
+
 }
