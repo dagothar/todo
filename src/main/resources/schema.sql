@@ -1,10 +1,10 @@
-CREATE TABLE IF NOT EXISTS Tasks(
-    id SERIAL,
-    author INT NOT NULL,
-    status BOOLEAN DEFAULT FALSE,
-    todo VARCHAR(255) NOT NULL,
-    date DATE DEFAULT NOW()
-);
+-- CREATE TABLE IF NOT EXISTS Tasks(
+--     id SERIAL,
+--     author INT NOT NULL,
+--     status BOOLEAN DEFAULT FALSE,
+--     todo VARCHAR(255) NOT NULL,
+--     date DATE DEFAULT NOW()
+-- );
 
 CREATE Table IF NOT EXISTS Users(id SERIAL,
     username VARCHAR(255) NOT NULL, 

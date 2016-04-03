@@ -1,11 +1,15 @@
-package todo.services;
+package todo.services.impl;
 
 import java.util.List;
 import todo.models.Task;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import todo.forms.TaskForm;
+import todo.models.CurrentUser;
 import todo.repositories.TaskRepository;
+import todo.services.TaskService;
 
 /**
  *
@@ -18,7 +22,15 @@ public class TaskServiceImpl implements TaskService {
     TaskRepository taskRepository;
     
     @Override
-    public void addTask(Task task) {
+    public void addTask(TaskForm taskForm) {
+        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        Task task = new Task();
+        task.setAuthor(user.getId());
+        task.setDate(taskForm.getDate());
+        task.setStatus(taskForm.getStatus());
+        task.setTodo(taskForm.getTodo());
+        
         taskRepository.save(task);
     }
 
@@ -37,17 +49,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void updateTask(Task task) {
-        taskRepository.save(task);
+    public void setTaskStatus(Long id, boolean status) {
+        taskRepository.setTaskStatus(status, id);
     }
 
     @Override
-    public void removeTask(Task task) {
-        taskRepository.delete(task);
+    public void removeTask(Long id) {
+        taskRepository.delete(id);
     }
 
     @Override
-    public int calculatePercentageOfCompletedTasks(List<Task> tasks) {
+    public int calculateProgress(List<Task> tasks) {
         int completed = 0;
         for (Task task : tasks) {
             if (task.getStatus()) {

@@ -1,4 +1,4 @@
-package todo.services;
+package todo.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import todo.models.User;
 import todo.models.CurrentUser;
+import todo.services.UserService;
 
 /**
  *

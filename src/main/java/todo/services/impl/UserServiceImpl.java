@@ -1,4 +1,4 @@
-package todo.services;
+package todo.services.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import todo.forms.UserForm;
 import todo.models.Role;
 import todo.models.User;
+import todo.services.UserService;
 
 /**
  *

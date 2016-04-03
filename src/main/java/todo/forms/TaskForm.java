@@ -18,7 +18,7 @@ public class TaskForm {
     private String todo;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate day;
+    private LocalDate date;
 
     public TaskForm() {
     }
@@ -26,10 +26,10 @@ public class TaskForm {
     public TaskForm(boolean status, String todo, LocalDate date) {
         this.status = status;
         this.todo = todo;
-        this.day = date;
+        this.date = date;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -45,12 +45,12 @@ public class TaskForm {
         this.todo = todo;
     }
 
-    public LocalDate getDay() {
-        return day;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setDay(LocalDate day) {
-        this.day = day;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
             
 }

@@ -1,4 +1,4 @@
-package todo.services;
+package todo.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import todo.models.CalendarDay;
 import todo.models.Task;
+import todo.services.CalendarService;
+import todo.services.TaskService;
 
 /**
  *
@@ -70,7 +72,7 @@ public class CalendarServiceImpl implements CalendarService {
     public CalendarDay makeCalendarDay(Long author, LocalDate date, int month) {
         List<Task> tasks = taskService.findTasksByAuthorAndDate(author, date);
         boolean busy = !tasks.isEmpty();
-        int completed = taskService.calculatePercentageOfCompletedTasks(tasks);
+        int completed = taskService.calculateProgress(tasks);
         
         CalendarDay calendarDay = new CalendarDay(date, busy, completed, date.getMonthOfYear() == month);
         return calendarDay;

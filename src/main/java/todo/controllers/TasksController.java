@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import todo.forms.TaskForm;
 import todo.models.CurrentUser;
 import todo.services.TaskService;
 
@@ -54,7 +55,7 @@ public class TasksController {
         m.addAttribute("tasks", tasks);
 
         /* percentage completed */
-        int progress = taskService.calculatePercentageOfCompletedTasks(tasks);
+        int progress = taskService.calculateProgress(tasks);
         m.addAttribute("progress", progress);
 
         /* for pagination */
@@ -65,7 +66,7 @@ public class TasksController {
 
         /* new task form */
         if (!m.containsAttribute("newTask")) {
-            Task newTask = new Task(0l, 0l, false, "", date);
+            TaskForm newTask = new TaskForm(false, "", date);
             m.addAttribute("newTask", newTask);
         }
 
@@ -87,9 +88,7 @@ public class TasksController {
             @RequestParam("id") Long id,
             @RequestParam("status") boolean status
     ) {
-        Task task = taskService.findTaskById(id);
-        task.setStatus(!task.getStatus());
-        taskService.updateTask(task);
+        taskService.setTaskStatus(id, status);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
@@ -100,8 +99,7 @@ public class TasksController {
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam("id") Long id
     ) {
-        Task task = taskService.findTaskById(id);
-        taskService.removeTask(task);
+        taskService.removeTask(id);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
@@ -110,23 +108,19 @@ public class TasksController {
     @RequestMapping(value = "/{date}", method = RequestMethod.POST)
     public String addTask(
             @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            @Valid Task task,
+            @Valid TaskForm taskForm,
             BindingResult result,
             RedirectAttributes attr,
             Authentication auth
     ) {
-        
         if (result.hasErrors()) {
-            
             attr.addFlashAttribute("org.springframework.validation.BindingResult.newTask", result);
-            attr.addFlashAttribute("newTask", task);
+            attr.addFlashAttribute("newTask", taskForm);
 
             return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
         }
 
-        CurrentUser user = (CurrentUser) auth.getPrincipal();
-        task.setAuthor(user.getId());
-        taskService.addTask(task);
+        taskService.addTask(taskForm);
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
