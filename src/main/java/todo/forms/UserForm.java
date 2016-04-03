@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
  *
  * @author dagothar
  */
-@Component
 public class UserForm {
     
     @NotNull

@@ -4,9 +4,8 @@ import java.util.List;
 import todo.models.Task;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import todo.dao.TaskDao;
+import todo.repositories.TaskRepository;
 
 /**
  *
@@ -14,40 +13,37 @@ import todo.dao.TaskDao;
  */
 @Service
 public class TaskServiceImpl implements TaskService {
-
+    
     @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    TaskDao taskDao;
+    TaskRepository taskRepository;
     
     @Override
     public void addTask(Task task) {
-        taskDao.createTask(task);
+        taskRepository.save(task);
     }
 
     @Override
     public Task findTaskById(Long id) {
-        Task task = taskDao.findTaskById(id);
+        Task task = taskRepository.findOne(id);
 
         return task;
     }
 
     @Override
     public List<Task> findTasksByAuthorAndDate(Long author, LocalDate date) {
-        List<Task> tasks = taskDao.findTasksByAuthorAndDate(author, date);
+        List<Task> tasks = taskRepository.findByAuthorAndDate(author, date);
 
         return tasks;
     }
 
     @Override
     public void updateTask(Task task) {
-        taskDao.updateTask(task);
+        taskRepository.save(task);
     }
 
     @Override
     public void removeTask(Task task) {
-        taskDao.deleteTask(task);
+        taskRepository.delete(task);
     }
 
     @Override

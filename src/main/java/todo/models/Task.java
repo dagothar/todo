@@ -1,5 +1,9 @@
 package todo.models;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.joda.time.LocalDate;
@@ -9,16 +13,17 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  * @author dagothar
  */
-public class Task {
+@Entity
+public class Task implements Serializable {
 
+    @Id
+    @GeneratedValue
     private Long id;
 
     private Long author;
 
     private boolean status;
 
-    @NotNull
-    @Size(min = 1, max = 255, message = "Task description has to be 1-255 characters long")
     private String todo;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
