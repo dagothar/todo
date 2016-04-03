@@ -24,7 +24,7 @@ public class UsersController {
     @RequestMapping(method = RequestMethod.GET)
     @PreAuthorize("hasRole('ADMIN')")
     public String users(Model m) {
-        List<User> users = userService.getAllUsers();
+        List<User> users = userService.findAllUsers();
         m.addAttribute("users", users);
         
         return "users";

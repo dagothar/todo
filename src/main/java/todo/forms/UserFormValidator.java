@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import todo.models.User;
 import todo.services.UserService;
 
 /**
@@ -42,7 +41,7 @@ public class UserFormValidator implements Validator {
 
     private void validateUsername(UserForm form, Errors errors) {
 
-        if (userService.getUserByUsername(form.getUsername()).isPresent()) {
+        if (userService.findUserByUsername(form.getUsername()) != null) {
             errors.rejectValue("username", "username.exists", "Username already exists!");
         }
     }

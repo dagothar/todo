@@ -1,17 +1,32 @@
 package todo.models;
 
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  *
  * @author dagothar
  */
-public class User {
+@Entity
+public class User implements Serializable {
     
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
     
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
     
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
     
+    @Enumerated(EnumType.STRING)
     private Role role;
     
     public User() {
