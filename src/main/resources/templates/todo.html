@@ -96,16 +96,12 @@
 
                         <div class="pull-right">
 
-                            <!--<a 
-                                class="glyphicon glyphicon-wrench"
+                            <a 
+                                class="glyphicon glyphicon-arrow-right text-primary"
                                 href="#"
-                                data-toggle="popover" 
-                                title="Edit task" 
-                                data-content="&lt;a class='glyphicon glyphicon-remove text-danger' href='#'&gt;&lt;/a&gt;"
-                                th:attr="'data-content=&lt;a class=\'glyphicon glyphicon-remove text-danger\' href=' + @{/tasks/} + ${nowDate} + '/remove?id=' + ${task.id} + '&gt;&lt;/a&gt;'"
-                                data-html="true"
+                                th:href="@{/tasks/} + ${nowDate} + '/push?id=' + ${task.id}"
                                 >
-                            </a-->
+                            </a>
 
                             <a 
                                 class="glyphicon glyphicon-remove text-danger"

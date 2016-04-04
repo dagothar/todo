@@ -28,6 +28,9 @@ public interface TaskService {
 
     @PreAuthorize("@taskSecurityService.isOwnerOf(principal, #id)")
     void setTaskStatus(Long id, boolean status);
+    
+    @PreAuthorize("@taskSecurityService.isOwnerOf(principal, #id)")
+    void pushTask(Long id);
 
     @PreAuthorize("@taskSecurityService.isOwnerOf(principal, #id)")
     void removeTask(Long id);

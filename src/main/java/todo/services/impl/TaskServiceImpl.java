@@ -54,6 +54,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public void pushTask(Long id) {
+        Task task = taskRepository.findOne(id);
+        
+        Task newTask = new Task();
+        newTask.setAuthor(task.getAuthor());
+        newTask.setStatus(false);
+        newTask.setTodo(task.getTodo());
+        newTask.setDate(task.getDate().plusDays(1));
+        
+        taskRepository.save(newTask);
+    }
+
+    @Override
     public void removeTask(Long id) {
         taskRepository.delete(id);
     }

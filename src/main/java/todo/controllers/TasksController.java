@@ -92,6 +92,16 @@ public class TasksController {
 
         return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
     }
+    
+    @RequestMapping(value = "/{date}/push", method = RequestMethod.GET)
+    public String pushTask(
+            @PathVariable(value = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @RequestParam("id") Long id
+    ) {
+        taskService.pushTask(id);
+
+        return "redirect:/tasks/" + date.toString("yyyy-MM-dd");
+    }
 
     /* REMOVE TASKS */
     @RequestMapping(value = "/{date}/remove", method = RequestMethod.GET)
