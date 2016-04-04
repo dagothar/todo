@@ -34,11 +34,13 @@ public class CalendarController {
         CurrentUser user = (CurrentUser) auth.getPrincipal();
         
         /* list of days for this month */
-        LocalDate date = new LocalDate(year, month, 1);
+        LocalDate date = new LocalDate(year, month, 1);        
         List<List<CalendarDay>> weeks = calendarService.getWeeksList(user.getId(), date);
         m.addAttribute("weeks", weeks);
         
         /* for pagination */
+        m.addAttribute("currentDate", new LocalDate());
+        
         String title = String.format("%d %s", year, date.toString("MMM"));
         m.addAttribute("title", title);
         

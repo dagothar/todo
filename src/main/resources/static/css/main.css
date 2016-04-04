@@ -27,3 +27,8 @@ body {
     display: block;
     width: 100%;
 }
+
+.current-day a {
+    font-weight: bold;
+    color: #ff0000;
+}
